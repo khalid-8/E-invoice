@@ -1,0 +1,192 @@
+@font-face {
+    font-family: 'ReadexProFont';
+    src: url('./fonts/ReadexPro-Bold.ttf') format(''),
+}
+@import url(http://fonts.googleapis.com/earlyaccess/droidarabickufi.css);
+
+body {
+    /* direction: rtl; */
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace, 'Droid Arabic Kufi', serif;
+    font-size: .8125rem;
+    font-weight: 400;
+    line-height: 1.5385;
+    color: #333;
+    text-align: left;
+    background-color: #eee;
+}
+
+.mt-50 {
+    margin-top: 50px
+}
+
+.mb-50 {
+    margin-bottom: 50px
+}
+
+.invoie-type{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    /* transform: translateX(23vw); */
+    /* border: 1px solid green; */
+}
+
+/* .card-body{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; 
+} */
+.info-row{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid red; */
+}
+.info-row div{
+    min-width: 30%;
+}
+.main-table{
+    width: 100%;
+}
+.card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: .1875rem
+}
+
+.card-img-actions {
+    position: relative
+}
+
+.card-body {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+    text-align: center
+}
+
+.card-title {
+    position: absolute;
+    right: 0.9em;
+    margin-top: 10px;
+    font-size: 17px;
+
+    /* left: 10em; */
+}
+
+.invoice-color {
+    color: red !important
+}
+
+.card-header {
+    /* height: 10vw; */
+    padding: .9375rem 1.25rem;
+    margin-bottom: 0;
+    background-color: rgba(0, 0, 0, .02);
+    border-bottom: 1px solid rgba(0, 0, 0, .125)
+}
+
+a {
+    text-decoration: none !important
+}
+
+.btn-light {
+    color: #333;
+    background-color: #fafafa;
+    border-color: #ddd
+}
+
+.header-elements-inline {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap
+}
+
+@media (min-width: 768px) {
+    .wmin-md-400 {
+        min-width: 400px !important
+    }
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #2196f3
+}
+
+.btn-labeled>b {
+    position: absolute;
+    top: -1px;
+    background-color: blue;
+    display: block;
+    line-height: 1;
+    padding: .62503rem
+}
+
+.total-barcode{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.table-responsive{
+    display: flex;
+}
+
+.barcode-tag{
+    max-width: 50%;
+    /* height: 1vw;
+    width: 1vw; */
+    /* height: 2vw;
+    width: 2vw; */
+    /* width: 50%; */
+}
+.total-tableTitle{
+    /* position: absolute; */
+    /* right: 2em; */
+    /* width: 50%; */
+    /* position: relative; */
+    max-width: 50%;
+    
+}
+.text-muted.without-tax{
+    /* border: 1px solid green; */
+    font-size: 0.6442rem;
+}
+
+.total-include-tax {
+    width: 130%;
+}
+.table{
+    /* border: 1px solid red; */
+}
+/* input.imput-num.wight-input{
+    transform: translateX(1vw);
+}
+input.imput-num.price-input{
+    transform: translateX(1vw);
+} */
+
+.chech{
+
+    
+}
+.total_table{
+    /* position: relative;
+    width: 2em; */
+}
