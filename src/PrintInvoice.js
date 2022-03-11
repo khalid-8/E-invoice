@@ -66,6 +66,8 @@ export default function PrintInvoice({data, total, sellerInfo}) {
 
         const qrCodeBuf = Buffer.concat(tagsBufsArray)
         const qrCodeB64 = qrCodeBuf.toString('base64')
+
+
         return qrCodeB64
     }
 
@@ -152,6 +154,13 @@ export default function PrintInvoice({data, total, sellerInfo}) {
             return err;
         })
 
+        htmlToImage.toPng(document.getElementById('qr_code'), { quality: 0.95 })
+        .then(function (dataUrl) {
+            var link = document.createElement('a');
+            link.download = 'QrCode.png';
+            link.href = dataUrl;
+            link.click();
+        });
     }
 
     // Adding all the rows from the input form to the invoice table
@@ -332,28 +341,22 @@ export default function PrintInvoice({data, total, sellerInfo}) {
     //     pdf.save("download.pdf"); 
     // });
 
-    // htmlToImage.toPng(document.getElementById('qr_code'), { quality: 0.95 })
-    // .then(function (dataUrl) {
-    //     var link = document.createElement('a');
-    //     link.download = 'QrCode.jpeg';
-    //     link.href = dataUrl;
-    //     link.click();
-    // });
+    //html2pdf method to print PDF
+    // function downloadPDF(){
+    //     const invoice = document.getElementById("invoice");
+    //     let height = Math.max(invoice.scrollHeight, invoice.offsetHeight,
+    //         window.clientHeight, window.scrollHeight, window.offsetHeight)
+    //     let heightCM = height / 35.35
+    //     console.log(invoice);
+    //     // console.log(window);
+    //     var opt = {
+    //         margin: 1,
+    //         filename: 'myfile.pdf',
+    //         image: { type: 'jpeg', quality: 0.99 },
+    //         html2canvas: { dpi: 192, letterRendering: true },
+    //         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    //     };
+    //     html2pdf().from(invoice).set(opt).save();
+    // }
 
-//html2pdf method to print PDF
-// function downloadPDF(){
-//     const invoice = document.getElementById("invoice");
-//     let height = Math.max(invoice.scrollHeight, invoice.offsetHeight,
-//         window.clientHeight, window.scrollHeight, window.offsetHeight)
-//     let heightCM = height / 35.35
-//     console.log(invoice);
-//     // console.log(window);
-//     var opt = {
-//         margin: 1,
-//         filename: 'myfile.pdf',
-//         image: { type: 'jpeg', quality: 0.99 },
-//         html2canvas: { dpi: 192, letterRendering: true },
-//         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-//     };
-//     html2pdf().from(invoice).set(opt).save();
-// }
+    
