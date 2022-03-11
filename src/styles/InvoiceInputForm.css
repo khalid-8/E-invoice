@@ -1,93 +1,74 @@
-/* body {
+.form-nowrap{
+    justify-content: center;
     direction: rtl;
-} */
-
-
-.input-form{
+    border-radius: 20px;
+    box-sizing: border-box;
     display: flex;
-    direction: rtl;
+    flex-direction: row;
+    justify-content: space-around;
+    width: min(100vw, 55em);
 }
-
+.flx-1{
+    flex: 0.9;
+}
+.flx-2{
+    flex: 2;
+}
+.flx-3{
+    flex: 3;
+}
+#item-quantity ~ .placeholder{
+    right: 15px;
+}
+#item-quantity ~ .cut {
+    right: 9px;
+}
+.input-nowrap textarea{
+    padding-top: 10px;
+}
 .table{
     width: 90%;
-    /* margin-right: 1em; */
-    margin: 1em 1em;
-    /* direction: rtl; */
-    /* float: right; */
-    /* border: 1px solid red; */
+    margin-bottom: 0;
+    margin: 3px 0;
 }
-.teable-cols{
-    text-align: center;
-}
-.desc-col{
-    width: 60%;
-}
-.table-rows td{
-    /* display:flex;
-    flex-direction: row;
-    justify-content: center; */
-    vertical-align: middle; 
-    display: table-cell;
-    /* border: 1px solid red; */ 
-}
-.tableBody-cells *{
-    /* border: 1px solid red; */
-    border-radius: 0.3em;
-    width: 100%;
-}
-.tableBody td{
-    /* border: 1px solid red; */
-}
-#selectType{
-    width: 100%;
-}
-
-
-.input-desc{
-    /* border: 1px solid red; */
-   
-}
-#orderDesc::-webkit-input-placeholder{
-    text-align: center;
-}
-
-.form-control-sm {
-    /* border:1px solid rgb(190, 55, 55);
-    vertical-align:top; */
-    vertical-align:top;
-    text-align: center;
-    font-size: .775rem;
-    height:29px;
-}
-
-.form-control{
-    width: 80%;  
-}
-
-.imput-num{
-    width: 6vw;
-}
-
-.insert-new-itemBtn{
+.input-nowrap{
+    height: 50px;
+    margin: .4em;
     position: relative;
-    /* border: 1px solid red; */
-    /* float: right; */
-    /* right: 4em;
-    top: 3.2em; */
-    top: 4em;
-    right: 2em;
+    align-items: center;
+    justify-content: center;
+    width: 20%;
+}
+.ic1 {
+    margin-top: min(7vw, 30px);
+    margin-bottom: min(7vw, 30px);
+}
+.buttons-control{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.cut-very-short {
+    width: 30px;
+}
+.insert-btn{
+    position: relative;
+    margin: 4px;
+    color: blue;
+}
+.delete-btn{
+    border-radius: 4em;
+    color: red;
 }
 
 .form-submit{
     display: flex;
     justify-content: center;
 }
-
 .form-submitBtb{
-    width: 9vw;
+    width: min(12vw, 5em);
+    font-size: calc(0.7em + 1vmin);
+    padding: 0.2em;
+    font-weight: bold;
     background: linear-gradient(90deg, rgba(54,47,189,1) 0%, rgba(0,212,255,1) 100%);
-}
-.delete-rowBtn{
-    border-radius: 4em;
-    color: red;
 }

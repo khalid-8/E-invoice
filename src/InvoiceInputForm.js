@@ -1,132 +1,139 @@
-import './styles/InvoiceInputForm.css'
-import {useState} from 'react'
+import './styles/InvoiceInputForm.css';
 import $ from 'jquery'; 
+import {useState} from 'react'
 import ReactDOMServer from 'react-dom/server';
-import TestInvoice from './TestInvoice.js';
+import PrintInvoice from './PrintInvoice.js';
 import { BsFillPlusSquareFill } from 'react-icons/bs';
 import { AiFillMinusSquare } from 'react-icons/ai';
+// import { createElement } from 'react/cjs/react.production.min';
+// import TestPrintedInvoice from './TestPrintedInvoice';
 
-
-export default function InvoiceInputForm() {
+export default function InvoiceInputForm({sellerInfo}) {
     const [placedOrders, setPlacedOrders] = useState()
     const [showInvoice, setShowInvoice] = useState(false)
-    // let totalPrice = 0
-    // const [totalPrice, setTotalPrice] = useState(0)
 
     function iterateTable(){
-        const table = document.getElementById("myTable");
+        const table = document.getElementById("invoice-input-form");
+        const children = table.children;
         const orders = [];
         let total = 0
-        const descs = document.getElementsByClassName("desc-input")
-        const types = document.getElementsByClassName("select-input")
-        const weights = document.getElementsByClassName("wight-input")
-        const quantity = document.getElementsByClassName("qt-input")
-        const pricess = document.getElementsByClassName("price-input")
+        const descs = "#item-description"
+        const quantity = "#item-quantity"
+        const pricess = "#item-price"
         
-        for (let i = 0; i < (table.rows.length - 1); i++) {
+        for (let i = 0; i < children.length; i++) {
             orders[i] =  {
-                'describtion' : descs[i].value,
-                'type' : types[i].value,
-                'weight': weights[i].value,
-                'qt' : quantity[i].value,
-                'price': parseFloat(pricess[i].value )
+                'describtion' : children[i].querySelector(descs).value,
+                // 'type' : types[i].value,
+                // 'weight': weights[i].value,
+                'qt' : children[i].querySelector(quantity).value,
+                'price': parseFloat(children[i].querySelector(pricess).value)
             }
-            total += orders[i].price 
+            total += children[i].querySelector(pricess).value * children[i].querySelector(quantity).value
         }
-        orders['total'] = total
-        setPlacedOrders(orders)
-        setShowInvoice(true)
+        orders['total'] = total;
+        setPlacedOrders(orders);
+        setShowInvoice(true);
+        window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
     }
-
-    const typeOptions = 
-        `
-            <select class="form-control form-control-sm select-input" id="selectType">
-                <option class="option-type">18 قيراط</option>
-                <option> 21 قيراط</option>
-                <option>12 قيراط</option>
-            </select>
-        `
-
-
-    //delete row from the form on delete button click
     $(document).ready(function () {
-        $("#myTable").on('click', '.delete-rowBtn', function () {
-            // alert("are YOU Sure!")
-            $(this).closest('tr').remove();
+        $("#invoice-input-form").on('click', '.delete-btn', function () {
+            const form = document.getElementById('invoice-input-form');
+            // console.log(form)
+            const count = form.childElementCount
+            if (count > 1) $(this).closest('#row').remove();
+            // form.removeChild(form.lastChild);
         });
     })
 
-    function insertNewItem(){
-        const table = document.getElementById("myTable");
-        console.log(table)
-        // Create an empty <tr> element and add it to the 1st position of the table:
-        const row = table.insertRow(table.rows.length);
-        // Insert new cells (<td> elements) inside our table:
-        const descr = row.insertCell(0);
-        const type = row.insertCell(1);
-        const weight = row.insertCell(2);
-        const quantity = row.insertCell(3)
-        const price = row.insertCell(4);
-        const deleteOpt = row.insertCell(5);
+     //delete row from the form on delete button click
+    // function removeRow(){
+    //     const form = document.getElementById('invoice-input-form');
+    //     console.log(form)
+    //     const count = form.childElementCount
+    //     if (count < 2) return
+    //     form.removeChild(form.lastChild);
+    // }
 
-        // Add some text to the new cells:
-        descr.innerHTML = '<h6 class="font-weight-semibold"> <input class="input-desc desc-input" type="text" id="orderDesc" dir="rtl" placeholder="ادخل معلومات المنتج"/> </h6> '
-        //Add class name to the description div
-        descr.className = "tableBody-cells" 
-        //type field
-        type.innerHTML = typeOptions;
-        //weight field
-        weight.innerHTML = '<input class="imput-num wight-input"/>'
-        //quantity field
-        quantity.innerHTML = '<td class="tableBody-cells qt-cell"><input class="imput-num qt-input" type="number" /></td>'
-        //price field
-        price.innerHTML = '<span class="font-weight-semibold"><input class="imput-num price-input"/></span>'
-        // delete row icon
-        deleteOpt.innerHTML = ReactDOMServer.renderToString(<AiFillMinusSquare size={23} class="delete-rowBtn"/>);
-        //<AiFillMinusSquare size={23} class="delete-rowBtn"/>
+    // insert new row to the form when add button is clicked
+    function insertNewItem(){
+        const form = document.getElementById("invoice-input-form");
+        var row = document.createElement('div') 
+        var descDiv = document.createElement('div')
+        var qtDiv = document.createElement('div')
+        var priceDiv = document.createElement('div')
+        var button = document.createElement('div')
+
+        row.className = 'form-nowrap';
+        row.id = 'row'
+
+        //Add classes
+        descDiv.className = "input-nowrap flx-3 ic1";
+        qtDiv.className = "input-nowrap flx-1 ic1";
+        priceDiv.className = "input-nowrap ic1";
+        button.className = "buttons-control"
+
+        // Add elements to the divs
+        descDiv.innerHTML = ReactDOMServer.renderToString(
+            <>
+                <textarea id="item-description" className="input" type="text" placeholder=" "/>   
+                <div className="cut cut-very-short"></div>
+                <label htmlFor="item-description" className="placeholder">الوصف</label>
+            </>)
+        
+        qtDiv.innerHTML = ReactDOMServer.renderToString(
+            <>
+                <input id="item-quantity" className="input" type="text" placeholder=" "/>
+                <div className="cut cut-very-short"></div>
+                <label htmlFor="item-quantity" className="placeholder">الكمية</label>
+            </>)
+
+        priceDiv.innerHTML = ReactDOMServer.renderToString(
+            <>
+                <input id="item-price" className="input" type="text" placeholder=" "/>
+                <div className="cut cut-very-short"></div>
+                <label htmlFor="tem-price" className="placeholder">السعر</label>
+            </>)
+
+        button.innerHTML =  ReactDOMServer.renderToString(<AiFillMinusSquare size={23} className="delete-btn"/>); 
+        
+        // insert divs to the row then to the form
+        row.appendChild(descDiv)
+        row.appendChild(qtDiv)
+        row.appendChild(priceDiv)
+        row.appendChild(button)
+        form.appendChild(row)
     }
+
     return (
         <>
-            <div className="input-form">
-                <table class="table table-sm" id="myTable">
-                <thead>
-                    <tr>
-                        <th class="teable-cols desc-col">الوصف</th>
-                        <th class="teable-cols">العيار</th>
-                        <th class="teable-cols">الوزن</th>
-                        <th class="teable-cols">الكمية</th>
-                        <th class="teable-cols">السعر</th>
-                        
-                    </tr>
-                </thead>
-                <tbody class="tableBody">
-                    <tr>
-                        <td class="tableBody-cells">
-                            <h6 class="font-weight-semibold"> <input class="input-desc desc-input" type='text' id="orderDesc" dir="rtl" placeholder='ادخل معلومات المنتج'/> </h6> 
-                        </td>
-                        <td class="tableBody-cells"> 
-                            <select class="form-control form-control-sm select-input" id="selectType">
-                                <option>18 قيراط</option>
-                                <option>21 قيراط</option>
-                                <option>12 قيراط</option>
-                            </select>
-                        </td>
-                        <td class="tableBody-cells wight-cell"><input class="imput-num wight-input"/></td>
-                        <td class="tableBody-cells qt-cell"><input class="imput-num qt-input" type="number" /></td>
-                        <td class="tableBody-cells"> <input class="imput-num price-input"/></td>
-                        <td> <AiFillMinusSquare size={23} class="delete-rowBtn"/> </td>
-                    </tr>
-                    </tbody>
-                </table> 
-                <BsFillPlusSquareFill className="insert-new-itemBtn" size={19} onClick={insertNewItem}/>
-            
+            <div className="title">تفاصيل الفاتورة</div>
+            <div id="invoice-input-form">
+                <div id='row' className="form-nowrap">
+                    <div className="input-nowrap flx-3 ic1">
+                        <textarea id="item-description" className="input" type="text" placeholder=" "/>   
+                        <div className="cut cut-very-short"></div>
+                        <label htmlFor="item-description" className="placeholder">الوصف</label>
+                    </div>
+                    <div className="input-nowrap flx-1 ic1">
+                        <input id="item-quantity" className="input" type="text" placeholder=" "/>
+                        <div className="cut cut-very-short"></div>
+                        <label htmlFor="item-quantity" className="placeholder">الكمية</label>
+                    </div>
+                    <div className="input-nowrap ic1">
+                        <input id="item-price" className="input" type="text" placeholder=" "/>
+                        <div className="cut cut-very-short"></div>
+                        <label htmlFor="tem-price" className="placeholder">السعر</label>
+                    </div>
+                    <div className='buttons-control'>
+                        <AiFillMinusSquare size={23} className="delete-btn"/> 
+                        <BsFillPlusSquareFill className="insert-btn" size={19} onClick={insertNewItem}/>
+                    </div>
+                </div>
             </div>
-            <div className="form-submit"> <input class="btn btn-primary form-submitBtb" type="submit" value="إصدار" onClick={iterateTable}/> </div>
+            <div className="form-submit"> <input className="btn btn-primary form-submitBtb" type="submit" value="إصدار" onClick={iterateTable}/> </div>
 
-            {showInvoice ? <TestInvoice data={placedOrders} total={placedOrders.total}/> : ""}
+            {showInvoice ? <PrintInvoice data={placedOrders} total={placedOrders.total} sellerInfo={sellerInfo}/>: ""}
         </>
     )
 }
-
-
-//<span class="text-muted"><input class="input-desc" type='text'/></span>

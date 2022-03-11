@@ -1,13 +1,34 @@
+.your-style {
+  font-family: 'Cairo';
+  font-weight: normal;
+  font-style: normal;
+}
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  /* margin: 0; */
+  padding-bottom: 50px;
+  font-family: 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+    background-color: #15172b;
+    display: flex;
+    justify-content: center;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+    font-family: 'Cairo', 'source-code-pro', 'Menlo', 'Monaco', 'Consolas', 'Courier New',
+    monospace; 
 }
+
+/* @font-face {
+  font-family: 'Cairo-Regular';
+  src: URL('./fonts/Cairo-Regular.ttf') format('truetype');
+} */
+@font-face {
+  font-family: 'Cairo';
+  src: url("fonts/Cairo-Regular.eot");
+  src: url("fonts/Cairo-Regular.woff") format("woff"),
+  url("fonts/Cairo-Regular.svg#filename") format("svg");
+} 
+
