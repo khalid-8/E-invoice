@@ -154,13 +154,13 @@ export default function PrintInvoice({data, total, sellerInfo}) {
             return err;
         })
 
-        htmlToImage.toPng(document.getElementById('qr_code'), { quality: 0.95 })
-        .then(function (dataUrl) {
-            var link = document.createElement('a');
-            link.download = 'QrCode.png';
-            link.href = dataUrl;
-            link.click();
-        });
+        // htmlToImage.toPng(document.getElementById('qr_code'), { quality: 0.95 })
+        // .then(function (dataUrl) {
+        //     var link = document.createElement('a');
+        //     link.download = 'QrCode.png';
+        //     link.href = dataUrl;
+        //     link.click();
+        // });
     }
 
     // Adding all the rows from the input form to the invoice table
