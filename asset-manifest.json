@@ -1,30 +1,30 @@
 {
   "files": {
     "main.css": "/E-invoice/static/css/main.bd1ad1ec.chunk.css",
-    "main.js": "/E-invoice/static/js/main.5a4f215f.chunk.js",
-    "main.js.map": "/E-invoice/static/js/main.5a4f215f.chunk.js.map",
-    "runtime-main.js": "/E-invoice/static/js/runtime-main.224d0702.js",
-    "runtime-main.js.map": "/E-invoice/static/js/runtime-main.224d0702.js.map",
-    "static/js/2.2a5982c5.chunk.js": "/E-invoice/static/js/2.2a5982c5.chunk.js",
-    "static/js/2.2a5982c5.chunk.js.map": "/E-invoice/static/js/2.2a5982c5.chunk.js.map",
-    "static/js/3.84da5383.chunk.js": "/E-invoice/static/js/3.84da5383.chunk.js",
-    "static/js/3.84da5383.chunk.js.map": "/E-invoice/static/js/3.84da5383.chunk.js.map",
+    "main.js": "/E-invoice/static/js/main.115e5ee9.chunk.js",
+    "main.js.map": "/E-invoice/static/js/main.115e5ee9.chunk.js.map",
+    "runtime-main.js": "/E-invoice/static/js/runtime-main.e41a2943.js",
+    "runtime-main.js.map": "/E-invoice/static/js/runtime-main.e41a2943.js.map",
+    "static/js/2.ddd9c7cf.chunk.js": "/E-invoice/static/js/2.ddd9c7cf.chunk.js",
+    "static/js/2.ddd9c7cf.chunk.js.map": "/E-invoice/static/js/2.ddd9c7cf.chunk.js.map",
+    "static/js/3.790c4bb8.chunk.js": "/E-invoice/static/js/3.790c4bb8.chunk.js",
+    "static/js/3.790c4bb8.chunk.js.map": "/E-invoice/static/js/3.790c4bb8.chunk.js.map",
     "static/js/4.d4165e15.chunk.js": "/E-invoice/static/js/4.d4165e15.chunk.js",
     "static/js/4.d4165e15.chunk.js.map": "/E-invoice/static/js/4.d4165e15.chunk.js.map",
     "static/js/5.20a73daa.chunk.js": "/E-invoice/static/js/5.20a73daa.chunk.js",
     "static/js/5.20a73daa.chunk.js.map": "/E-invoice/static/js/5.20a73daa.chunk.js.map",
     "index.html": "/E-invoice/index.html",
     "static/css/main.bd1ad1ec.chunk.css.map": "/E-invoice/static/css/main.bd1ad1ec.chunk.css.map",
-    "static/js/2.2a5982c5.chunk.js.LICENSE.txt": "/E-invoice/static/js/2.2a5982c5.chunk.js.LICENSE.txt",
-    "static/js/3.84da5383.chunk.js.LICENSE.txt": "/E-invoice/static/js/3.84da5383.chunk.js.LICENSE.txt",
+    "static/js/2.ddd9c7cf.chunk.js.LICENSE.txt": "/E-invoice/static/js/2.ddd9c7cf.chunk.js.LICENSE.txt",
+    "static/js/3.790c4bb8.chunk.js.LICENSE.txt": "/E-invoice/static/js/3.790c4bb8.chunk.js.LICENSE.txt",
     "static/js/4.d4165e15.chunk.js.LICENSE.txt": "/E-invoice/static/js/4.d4165e15.chunk.js.LICENSE.txt",
     "static/js/5.20a73daa.chunk.js.LICENSE.txt": "/E-invoice/static/js/5.20a73daa.chunk.js.LICENSE.txt",
     "static/media/App.css": "/E-invoice/static/media/ReadexPro-Bold.968b4c03.ttf"
   },
   "entrypoints": [
-    "static/js/runtime-main.224d0702.js",
-    "static/js/3.84da5383.chunk.js",
+    "static/js/runtime-main.e41a2943.js",
+    "static/js/3.790c4bb8.chunk.js",
     "static/css/main.bd1ad1ec.chunk.css",
-    "static/js/main.5a4f215f.chunk.js"
+    "static/js/main.115e5ee9.chunk.js"
   ]
 }
