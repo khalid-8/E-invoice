@@ -72,7 +72,7 @@ export default function PrintInvoice({data, total, sellerInfo}) {
     }
 
     function updatingStyling(docStyle, sheet, invoice, hasPrinted){
-        // if the prenting has been done update the styles to the original values
+        // if the printing has completed update the styles to the original values
         if (hasPrinted){
             docStyle.setProperty('--s1vw_4em', 'min(1vw, 4em)');
             docStyle.setProperty('--s1_3vw_0_8em', 'min(1.3vw, .8em)');
@@ -221,7 +221,7 @@ export default function PrintInvoice({data, total, sellerInfo}) {
                                 </ul>
                             </div>
                             {/*console.log(parseInt(document.documentElement.clientWidth/6))**/}
-                            <div id= "qr_code" className="barcode-tag invoice_info"> <QRCode value={createQrCode({'amount': (total).toString(), 'vat': (total*0.15).toString()})} size={QrSize()}/></div>
+                            <div id= "qr_code" className="barcode-tag invoice_info"> <QRCode value={createQrCode({'amount': (total+(total*0.15)).toString(), 'vat': (total*0.15).toString()})} size={QrSize()}/></div>
                             <div className="invoice_date_number invoice_info">
                                 <h6 className='invoice-color'>Invoice {invoiceID}</h6>
                                 <p>التاريخ: <span className="font-weight-semibold invoice_text">{new Date().toISOString().slice(0, 10)}</span></p>
