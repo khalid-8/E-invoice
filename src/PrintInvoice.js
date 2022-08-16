@@ -17,6 +17,8 @@ export default function PrintInvoice({data, total, sellerInfo}) {
     const [isLoading, setIsLoading] = useState(false)
     const [qrCodeSize, setQrCodeSize] = useState()
 
+    let pageCount = 1;
+
     const SellerName = sellerInfo.sellerName
     const VatNum = sellerInfo.VATnumber
 
@@ -106,16 +108,10 @@ export default function PrintInvoice({data, total, sellerInfo}) {
         docStyle.setProperty('--s2_5vw_1_1em', '1.1em');
         docStyle.setProperty('--s2_4vw_1_2em', '1.2em');
 
-        let pages = 1
-        let invoiceHeight = invoice.clientHeight - 1004;
-        while (invoiceHeight >= 0){
-            pages += 1
-            invoiceHeight -= 1004;
-        }
-        // make the invoice sheet larger and the invoice fet the new width
+        // make the invoice sheet larger and the invoice fet the new width and height
         sheet.style = `width: 55em;`
-        //
-        invoice.style = `width: 100%; height: ${pages*1004}px;`;
+        console.log(`Page Count is: ${pageCount}`)
+        invoice.style = `width: 100%; height: ${pageCount*1004}px;`;
 
         //position the total table at the end of the invoice
         total[0].style.position = 'absolute'
@@ -128,7 +124,11 @@ export default function PrintInvoice({data, total, sellerInfo}) {
         let row = document.getElementsByClassName("row")[0]
         let invoice = document.getElementById("invoice")
         let docStyle = document.documentElement.style;
-
+        console.log("waiting...")
+        //Get the number of pages
+        await getInvoicePages(invoice);
+        console.log("Done")
+        
         //Updating the Invoice styles in order to make the pdf consistent across diffrent screen sizes
         updatingStyling(docStyle, row, invoice, false);
         var opt =
@@ -139,8 +139,13 @@ export default function PrintInvoice({data, total, sellerInfo}) {
         await html2pdf().set(opt).from(invoice).toPdf().get('pdf')
         // You have access to the jsPDF object and can use it as desired.
         .then(function (pdfObj) {
-            //Delete the first blank page
-            pdfObj.deletePage(1);
+            let pdfPages = pdfObj.internal.getNumberOfPages()
+            //delete the first blank page
+            if (pdfPages !== pageCount)
+            {
+                pdfObj.deletePage(1);
+            }
+            
             //Save the file
             pdfObj.save(invoiceID+ '.pdf')
         }).then(() => {
@@ -155,6 +160,16 @@ export default function PrintInvoice({data, total, sellerInfo}) {
         
     }
 
+    async function getInvoicePages(invoice){
+        new Promise(() => {
+            pageCount = 1
+            let invoiceHeight = invoice.clientHeight - 1004;
+            while (invoiceHeight >= 0){
+                pageCount += 1;
+                invoiceHeight -= 1004;
+            }
+        })
+    }
     // Adding all the rows from the input form to the invoice table
     function TableRow(data, i){
         return(
