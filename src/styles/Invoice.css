@@ -5,7 +5,7 @@
     --s2vw_1_1em : min(2vw, 1.1em);
     --s2_2vw_1_em : min(2.2vw, 1em);
     --s2_2vw_1_1em : min(2.2vw, 1.1em);
-    --s2vw_0_9em : min(2vw, .9em);
+    --s2vw_1em : min(2vw, 1em);
     --s2_5vw_1_1em : min(2.5vw, 1.1em);
     --s2_4vw_1_2em : min(2.4vw, 1.2em);
 }
@@ -47,7 +47,10 @@
     padding : 0;
 }
 #invoice{
+    break-before: always;
+    break-after: always;
     width: 90vw;
+    /* height: min(90vh, 762px); */
     direction: rtl;
     padding-bottom: 0;
     margin-bottom: 0;
@@ -55,6 +58,7 @@
 .invoice_date_number{
     flex: 1;
 }
+
 .store_info_invoice{
     flex: 1;
     /* background-color: #2196f3; */
@@ -70,13 +74,19 @@
     /* background-color: rebeccapurple; */
 }
 .print_table_body td, .print_table_body td *{
-    font-size: var(--s2vw_0_9em);
+    font-size: var(--s2vw_1em);
     /* background-color: red; */
 }
-
+.itemNum{
+    /* display: block; */
+    padding: 10px 0 !important;
+    color: red;
+    text-align: center;
+}
 .desc_section{
     position: relative;
     /* text-align: center; */
+    /* margin-right: 2em; */
     text-align: start;
     width: 55%;
     /* background-color: #2196f3; */
@@ -119,7 +129,16 @@
 }
 
 .invoice-color {
-    color: red !important
+    color: red !important;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.invoice-rs-info{
+    display: block;
+    margin-bottom: 0.5rem;
+    /* overflow: hidden;
+    white-space: nowrap; */
 }
 
 a {
@@ -144,6 +163,9 @@ a {
 }
 
 .total_body{
+    position: relative; 
+    margin-top: 5em;
+    bottom: 3em;
     width: 50%;
 }
 .btn-primary {
@@ -173,7 +195,7 @@ a {
 }
 
 .barcode-tag{
-    flex: 1.2;
+    flex: 1;
 }
 .total-tableTitle{
     /* position: absolute; */
@@ -233,15 +255,15 @@ a {
         visibility: visible;
     }
     :root{
-        --s1vw_4em : 4em;
-        --s1_3vw_0_8em : .8em;
-        --s2_2vw_1em : 1em;
-        --s2vw_1_1em : 1.1em;
-        --s2_2vw_1_em : 1em;
-        --s2_2vw_1_1em : 1.1em;
-        --s2vw_0_9em : .9em;
-        --s2_5vw_1_1em : 1.1em;
-        --s2_4vw_1_2em : 1.2em;
+        --s1vw_4em : 15px;
+        --s1_3vw_0_8em : 18px;
+        --s2_2vw_1em : 28px;
+        --s2vw_1_1em : 25px;
+        --s2_2vw_1_em : 18px;
+        --s2_2vw_1_1em : 22px;
+        --s2vw_1em : 18px;
+        --s2_5vw_1_1em : 28px;
+        --s2_4vw_1_2em : 26px;
     }
     #invoice {
         display: block !important;
@@ -262,6 +284,14 @@ a {
         bottom: 0;
         right: 0;
         margin: 0; */
+    }
+    .total_body{
+        position: absolute; 
+        bottom: 3em;
+        width: 50%;
+    }
+    #invoice:last-child {
+        page-break-after: auto;
     }
     /* .card-header p{
         font-size: 1em;
@@ -336,12 +366,54 @@ a {
     /* filter: blur(3px);
     -webkit-filter: blur(3px); */
     
-  }
+}
+
 .loader{
     position: relative;
     margin-bottom: 10px;
+    width:10em;
+    height:10em;
+    border:10px solid #A9A9AC;
+    border-top:10px solid #00BFFF;
+    border-radius:50%;
+}
+
+.loader{
+    -webkit-transition-property: -webkit-transform;
+    -webkit-transition-duration: 1.2s;
+    -webkit-animation-name: rotate;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    
+    -moz-transition-property: -moz-transform;
+    -moz-animation-name: rotate; 
+    -moz-animation-duration: 1.2s; 
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: linear;
+    
+    transition-property: transform;
+    animation-name: rotate; 
+    animation-duration: 1.2s; 
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    /* animation: 1.2s rotate infinite linear; */
 }
 .loader_text{
     position: relative;
     color: white;
+}
+
+@-webkit-keyframes rotate {
+    from {-webkit-transform: rotate(0deg);}
+    to {-webkit-transform: rotate(360deg);}
+}
+
+@-moz-keyframes rotate {
+    from {-moz-transform: rotate(0deg);}
+    to {-moz-transform: rotate(360deg);}
+}
+
+@keyframes rotate {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
 }

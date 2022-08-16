@@ -83,11 +83,11 @@ export default function SellerInfo({validation, sellerInfo}) {
 
     const isValidName = () => {
         const nameCell = document.getElementById("seller-fullname")
-        const re = new RegExp('^[a-zA-Z ]*$')
+        // const re = new RegExp('^[a-zA-Z ]*$')
         const name =  nameCell.value.trim()
 
-        if (!re.test(name) || name === "" || name.length < 6){
-            setError(nameCell, 'الاسم يجب ان يكون بالانجليزي وبدون فواصل او رموز');
+        if (name === "" || name.length < 3){
+            setError(nameCell, 'يجب ادخال اسم المؤسسة كاملا'); 
             return setValidName(false);
         }
         
@@ -115,7 +115,7 @@ export default function SellerInfo({validation, sellerInfo}) {
         <div className="title">المعلومات الضريبية</div>
         <div className="form">
             <div className="input-container ic1">
-                <input id="seller-fullname" className="input" type="text" minLength="0" maxLength="20" placeholder=" " onKeyUp={isValidName} />   
+                <input id="seller-fullname" className="input" type="text" minLength="0" maxLength="50" placeholder=" " onKeyUp={isValidName} />   
                 <div className="error"></div>  
                 <div className="cut cut-short"></div>
                 <label htmlFor="seller-fullname" className="placeholder">اسم البائع  <b style={{'color': 'red','fontSize':' 15px'}}>*</b></label>

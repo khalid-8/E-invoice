@@ -36,6 +36,8 @@ export default function InvoiceInputForm({sellerInfo}) {
         setShowInvoice(true);
         window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
     }
+
+    //delete row from the form on delete button click
     $(document).ready(function () {
         $("#invoice-input-form").on('click', '.delete-btn', function () {
             const form = document.getElementById('invoice-input-form');
@@ -46,14 +48,15 @@ export default function InvoiceInputForm({sellerInfo}) {
         });
     })
 
-     //delete row from the form on delete button click
-    // function removeRow(){
-    //     const form = document.getElementById('invoice-input-form');
-    //     console.log(form)
-    //     const count = form.childElementCount
-    //     if (count < 2) return
-    //     form.removeChild(form.lastChild);
-    // }
+    //Convert Arabic numbers to English
+    function arToEng_nubers(el){
+
+        if(!el.target.value) el.target.value = ""; //setter()
+        let nubStr = el.target.value.toString()
+        const a2e = nubStr.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+
+        el.target.value = a2e;
+    }
 
     // insert new row to the form when add button is clicked
     function insertNewItem(){
@@ -83,14 +86,14 @@ export default function InvoiceInputForm({sellerInfo}) {
         
         qtDiv.innerHTML = ReactDOMServer.renderToString(
             <>
-                <input id="item-quantity" className="input" type="text" placeholder=" "/>
+                <input id="item-quantity" className="input" type="text" onChange={e => arToEng_nubers(e)} placeholder=" "/>
                 <div className="cut cut-very-short"></div>
                 <label htmlFor="item-quantity" className="placeholder">الكمية</label>
             </>)
 
         priceDiv.innerHTML = ReactDOMServer.renderToString(
             <>
-                <input id="item-price" className="input" type="text" placeholder=" "/>
+                <input id="item-price" className="input" type="text" onChange={e => arToEng_nubers(e)} placeholder=" "/>
                 <div className="cut cut-very-short"></div>
                 <label htmlFor="tem-price" className="placeholder">السعر</label>
             </>)
@@ -103,6 +106,10 @@ export default function InvoiceInputForm({sellerInfo}) {
         row.appendChild(priceDiv)
         row.appendChild(button)
         form.appendChild(row)
+
+        //Add onKeyUp functions
+        $(priceDiv).on('keyup', (e) => {arToEng_nubers(e)})
+        $(qtDiv).on('keyup', (e) => {arToEng_nubers(e)})
     }
 
     return (
@@ -116,17 +123,16 @@ export default function InvoiceInputForm({sellerInfo}) {
                         <label htmlFor="item-description" className="placeholder">الوصف</label>
                     </div>
                     <div className="input-nowrap flx-1 ic1">
-                        <input id="item-quantity" className="input" type="text" placeholder=" "/>
+                        <input id="item-quantity" className="input" type="text" onChange={e => arToEng_nubers(e)}  placeholder=" "/>
                         <div className="cut cut-very-short"></div>
                         <label htmlFor="item-quantity" className="placeholder">الكمية</label>
                     </div>
                     <div className="input-nowrap ic1">
-                        <input id="item-price" className="input" type="text" placeholder=" "/>
+                        <input id="item-price" className="input" type="text" onChange={e => arToEng_nubers(e)} placeholder=" "/>
                         <div className="cut cut-very-short"></div>
                         <label htmlFor="tem-price" className="placeholder">السعر</label>
                     </div>
                     <div className='buttons-control'>
-                        <AiFillMinusSquare size={23} className="delete-btn"/> 
                         <BsFillPlusSquareFill className="insert-btn" size={19} onClick={insertNewItem}/>
                     </div>
                 </div>

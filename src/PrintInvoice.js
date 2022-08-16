@@ -1,21 +1,21 @@
 import './styles/Invoice.css'
-import * as htmlToImage from 'html-to-image';
-import jsPDF from 'jspdf';
 import QRCode from "react-qr-code";
 import { useState, useEffect } from 'react';
-import { Oval } from  'react-loader-spinner';
+import html2pdf from 'html2pdf.js';
+// import * as htmlToImage from 'html-to-image';
+// import jsPDF from 'jspdf';
+// import { Oval } from  'react-loader-spinner';
 // import addFont from './Cairo-Regular-normal';
 // import CairoRegularnormal from './CairoRegularnormal';
 // import html2canvas from 'html2canvas';
-// import html2pdf from 'html2pdf.js';
 // import ReactDOM from 'react-dom'
 // import $ from 'jquery'; 
-// import jsPDF from 'jspdf';
 
 
 export default function PrintInvoice({data, total, sellerInfo}) {
     const [invoiceID, setInvoiceID] = useState("")
     const [isLoading, setIsLoading] = useState(false)
+    const [qrCodeSize, setQrCodeSize] = useState()
 
     const SellerName = sellerInfo.sellerName
     const VatNum = sellerInfo.VATnumber
@@ -28,24 +28,25 @@ export default function PrintInvoice({data, total, sellerInfo}) {
     //Determin the QR code size
     const QrSize = function (){
         // if screen width / 6 is larger than 100 return 100 otherwise return the screen width / 6
-        return parseInt(document.documentElement.clientWidth/6) < 100? parseInt(document.documentElement.clientWidth/6) : 100 
+        return parseInt(document.documentElement.clientWidth/6) < 100? setQrCodeSize(parseInt(document.documentElement.clientWidth/6)) : setQrCodeSize(100)
     }
 
     useEffect(() => {
         setInvoiceID(ID().toString())
-        //Adding my custom font "Cairo-Regular" to jsPDF
-        // addFont();
-
+        QrSize()
     },[])
 
 
     function getTLVfromValue(tagNum, tagValue){
+        //encode the tag number
         const tagBuf = Buffer.from([tagNum], 'utf8')
-        const tagValueLenBuf = Buffer.from([tagValue.length], 'utf8')
+        //encode the tag value
         let tagValueBuf = Buffer.from(tagValue, 'utf8')
+        //encode the tag value length
+        const tagValueLenBuf = Buffer.from([tagValueBuf.length], 'utf8')
         
         const bufsArray = [tagBuf, tagValueLenBuf, tagValueBuf]
-        // console.log(bufsArray)
+        //concat and return the 3 buffers array into 1 byte array contains the TLV message 
         return Buffer.concat(bufsArray)
     }
     //Generate the QrCode using the Seller Name, VAT number, Time Stamp, Total amount & VAT amount buffer values
@@ -56,7 +57,6 @@ export default function PrintInvoice({data, total, sellerInfo}) {
         const VatReg = getTLVfromValue("2", VatNum)
         //Time Stamp
         const timeStamp = getTLVfromValue("3", new Date().toLocaleString("en-US", {timeZone: "Asia/Riyadh"}))//new Date().toISOString())
-        console.log()
         //Invoice Amount
         const invoiceAmount = getTLVfromValue("4", order.amount)
         //VAT Amount
@@ -71,24 +71,30 @@ export default function PrintInvoice({data, total, sellerInfo}) {
         return qrCodeB64
     }
 
-    function updatingStyling(docStyle, sheet, invoice, hasPrinted){
+    async function updatingStyling(docStyle, sheet, invoice, hasPrinted){
+        let total = document.getElementsByClassName('total_body')
         // if the printing has completed update the styles to the original values
         if (hasPrinted){
+            invoice.style.removeProperty("height");
+            QrSize()
             docStyle.setProperty('--s1vw_4em', 'min(1vw, 4em)');
             docStyle.setProperty('--s1_3vw_0_8em', 'min(1.3vw, .8em)');
             docStyle.setProperty('--s2_2vw_1em', 'min(2vw, 1em)');
             docStyle.setProperty('--s2vw_1_1em', 'min(2vw, 1.1em)');
             docStyle.setProperty('--s2_2vw_1_em', 'min(2.2vw, 1em)');
             docStyle.setProperty('--s2_2vw_1_1em', 'min(2.2vw, 1.1em)');
-            docStyle.setProperty('--s2vw_0_9em', 'min(2vw, .9em)');
+            docStyle.setProperty('--s2vw_1em', 'min(2vw, 1em)');
             docStyle.setProperty('--s2_5vw_1_1em', 'min(2.5vw, 1.1em)');
             docStyle.setProperty('--s2_4vw_1_2em', 'min(2.4vw, 1.2em)');
             
             sheet.style = `min(80vw, 55em);`
             invoice.style = `width: 90vw;`;
+            total[0].style.position = 'relative'
             return;
         }
-        
+
+        //Make the QR code bigger
+        setQrCodeSize(100)
         //make the text bigger by updating the CSS custom vars
         docStyle.setProperty('--s1vw_4em', '4em');
         docStyle.setProperty('--s1_3vw_0_8em', '0.8em');
@@ -96,54 +102,47 @@ export default function PrintInvoice({data, total, sellerInfo}) {
         docStyle.setProperty('--s2vw_1_1em', '1.1em');
         docStyle.setProperty('--s2_2vw_1_em', '1em');
         docStyle.setProperty('--s2_2vw_1_1em', '1.1em');
-        docStyle.setProperty('--s2vw_0_9em', '0.9em');
+        docStyle.setProperty('--s2vw_1em', '1em');
         docStyle.setProperty('--s2_5vw_1_1em', '1.1em');
         docStyle.setProperty('--s2_4vw_1_2em', '1.2em');
+
+        let pages = 1
+        let invoiceHeight = invoice.clientHeight - 1004;
+        while (invoiceHeight >= 0){
+            pages += 1
+            invoiceHeight -= 1004;
+        }
         // make the invoice sheet larger and the invoice fet the new width
         sheet.style = `width: 55em;`
-        invoice.style = `width: 100%;`;
+        //
+        invoice.style = `width: 100%; height: ${pages*1004}px;`;
+
+        //position the total table at the end of the invoice
+        total[0].style.position = 'absolute'
+
+        // total[0].style = 'overflow: hidden;'
     }
     // Download a PDF of the invoice
     async function downloadPDF(){
-        //Change Styling before printing
-        // let row = document.getElementsByClassName("row")[0]
+
         let row = document.getElementsByClassName("row")[0]
         let invoice = document.getElementById("invoice")
         let docStyle = document.documentElement.style;
 
-        //Updating the #Invoice styles in order to make the pdf consistent across diffrent screen sizes
+        //Updating the Invoice styles in order to make the pdf consistent across diffrent screen sizes
         updatingStyling(docStyle, row, invoice, false);
-        
-        //Print the Invoice
-        await htmlToImage.toPng(invoice, { quality: 0.95 })
-        .then(function (dataUrl) {
-            let imgWidth = 210; 
-            let pageHeight = 295;  
-            /*
-                Here are the numbers (paper width and height) that I found to work. 
-                It still creates a little overlap part between the pages.
-            */
-            // let doc = new jsPDF('p', 'mm');
-            let doc = new jsPDF('p', 'mm', 'a4');
-            const imgProps= doc.getImageProperties(dataUrl);
-            let imgHeight = imgProps.height * imgWidth / imgProps.width;
-            let heightLeft = imgHeight;
-            //setting the font
-            // doc.setFont("Cairo-Regular", "normal");
-            let position = 0;
-
-            doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, imgHeight, "", "MEDIUM");
-            heightLeft -= pageHeight;
-
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
-                doc.addPage();
-                doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, imgHeight, "", "MEDIUM");
-                heightLeft -= pageHeight;
+        var opt =
+            {
+                margin: [0, 0, 15, 0],
             }
-            doc.save(invoiceID+ '.pdf'); 
-            //display the pdf in the iframe
-            // $("#order_print").attr("src", doc.output('bloburl'))
+        //Create and Save the PDF file using html2pdf.js
+        await html2pdf().set(opt).from(invoice).toPdf().get('pdf')
+        // You have access to the jsPDF object and can use it as desired.
+        .then(function (pdfObj) {
+            //Delete the first blank page
+            pdfObj.deletePage(1);
+            //Save the file
+            pdfObj.save(invoiceID+ '.pdf')
         }).then(() => {
             // restor the oringal styling
             updatingStyling(docStyle, row, invoice, true);
@@ -152,25 +151,19 @@ export default function PrintInvoice({data, total, sellerInfo}) {
             updatingStyling(docStyle, row, invoice, true);
             console.error(err)
             return err;
-        })
-
-        // htmlToImage.toPng(document.getElementById('qr_code'), { quality: 0.95 })
-        // .then(function (dataUrl) {
-        //     var link = document.createElement('a');
-        //     link.download = 'QrCode.png';
-        //     link.href = dataUrl;
-        //     link.click();
-        // });
+        });
+        
     }
 
     // Adding all the rows from the input form to the invoice table
     function TableRow(data, i){
         return(
             <tr key={i}>
+                <td className='itemNum'>{i+1}</td>
                 <td>
                     <h6 className='desc_section'>{data.describtion}</h6>
                 </td>
-                <td style={{'textAlign' : 'center'}}>{data.qt}</td>
+                <td className={i===19? "firstPage" : ""} style={{'textAlign' : 'center'}}>{data.qt}</td>
                 <td style={{'textAlign' : 'center'}}><span className="font-weight-semibold">{data.price} ر.س</span></td>
             </tr>
         )
@@ -181,10 +174,10 @@ export default function PrintInvoice({data, total, sellerInfo}) {
                 {/* Loader */}
                 {isLoading ? 
                     <div className='blurBG'> 
-                        <div className="loader"><Oval color="#00BFFF" height={80} width={80}/></div>
+                        <div className="loader"></div>
                         <b className='loader_text'>... جاري التحميل</b>
                         {/** <Audio className="Loader" height="100" width="100" color='white' ariaLabel='loading'/>*/}  
-                    </div> : ""}
+                    </div>  : ""}
                 
                 <div className="row">
                     <div className="col-md-12 text-right mb-3"> 
@@ -194,13 +187,18 @@ export default function PrintInvoice({data, total, sellerInfo}) {
                             setTimeout(() => {
                                 downloadPDF().then(() => {
                                     setIsLoading(false);
+                                }).catch((err) =>{
+                                    setIsLoading(false);
                                 })
                             }, 500);
                             
                             }}>pdf تحميل</button>
                             {/**Print the Invoice */}
-                        <button className='btn btn-primary' id="print" onClick={() =>{
+                        <button className='btn btn-primary' id="print" onClick={async () =>{
+                                await setQrCodeSize(100);
                                 window.print();
+                                QrSize() 
+                                
                         }}>طباعة</button>
                     </div>
                     {/**the start of the invoice card */}
@@ -212,25 +210,27 @@ export default function PrintInvoice({data, total, sellerInfo}) {
                         </div>
                         {/** Store&Invoice Information */}
                         <div className="info-row">
+                            <div className="invoice_date_number invoice_info">
+                            <b className='invoice-color'>Invoice {invoiceID}</b>
+                            <p className='invoice-rs-info'>الرقم الضريبي: {VatNum}</p>
+                            <p className='invoice-rs-info'>التاريخ: <span className="font-weight-semibold invoice_text">{new Date().toISOString().slice(0, 10)}</span></p>
+                        </div>
+                            {/*console.log(parseInt(document.documentElement.clientWidth/6))**/}
+                            <div id= "qr_code" className="barcode-tag invoice_info"> <QRCode value={createQrCode({'amount': (total+(total*0.15)).toString(), 'vat': (total*0.15).toString()})} size={qrCodeSize}/></div>
                             <div className="store_info_invoice invoice_info">
                                 <ul className="list-unstyled">
-                                    <b className="text-primary">{sellerInfo.storeName ? sellerInfo.storeName : "اسم المحل"}</b>
-                                    <li key={"1"}>{sellerInfo.storeAddress ? sellerInfo.storeAddress : "عنوان المحل"}</li>
-                                    <li key={"2"}>{sellerInfo.storeCity? sellerInfo.storeCity : "المدينة"}</li>
-                                    <li key={"3"}>{sellerInfo.storePhone ? sellerInfo.storePhone : "هاتف المحل"}</li>
+                                    <b className="text-primary">{sellerInfo.storeName ? sellerInfo.storeName : SellerName}</b>
+                                    <li key={"1"}>{sellerInfo.storeAddress ? sellerInfo.storeAddress : ""}</li>
+                                    <li key={"2"}>{sellerInfo.storeCity? sellerInfo.storeCity : ""}</li>
+                                    <li key={"3"}>{sellerInfo.storePhone ? sellerInfo.storePhone : ""}</li>
                                 </ul>
-                            </div>
-                            {/*console.log(parseInt(document.documentElement.clientWidth/6))**/}
-                            <div id= "qr_code" className="barcode-tag invoice_info"> <QRCode value={createQrCode({'amount': (total+(total*0.15)).toString(), 'vat': (total*0.15).toString()})} size={QrSize()}/></div>
-                            <div className="invoice_date_number invoice_info">
-                                <h6 className='invoice-color'>Invoice {invoiceID}</h6>
-                                <p>التاريخ: <span className="font-weight-semibold invoice_text">{new Date().toISOString().slice(0, 10)}</span></p>
                             </div>
                         </div>
                         <div className="table-responsive">
                             <table className="table print_table">
                                 <thead className='print_table_head'>
                                     <tr>
+                                        <th className='itemNum'>#</th>
                                         <th className='desc_section'>الوصف</th>
                                         <th style={{'textAlign' : 'center'}}>الكمية</th>
                                         <th style={{'textAlign' : 'center'}}>السعر</th>
@@ -275,37 +275,34 @@ export default function PrintInvoice({data, total, sellerInfo}) {
     )
 }
 
-
-//prenting PDF
-// await html2canvas(invoice).then((canvas) => {
-    //     var imgData = canvas.toDataURL('image/png');
-    //     /*
-    //     Here are the numbers (paper width and height) that I found to work. 
-    //     It still creates a little overlap part between the pages, but good enough for me.
-    //     if you can find an official number from jsPDF, use them.
-    //     */
+    //Create and Save the PDF file using html2canvas & jsPDF
+    // await html2canvas(invoice, {
+    //     dpi: 300, // Set to 300 DPI
+    //     scale: 3, // Adjusts your resolution
+    // }).then((canvas) => {  
     //     let imgWidth = 210; 
     //     let pageHeight = 295;  
-    //     let imgHeight = canvas.height * imgWidth / canvas.width;
-    //     let heightLeft = imgHeight;
-
-    //     // let doc = new jsPDF('p', 'mm');
+    //     /*
+    //         Here are the numbers (paper width and height) that I found to work. 
+    //         It still creates a little overlap part between the pages.
+    //     */
     //     let doc = new jsPDF('p', 'mm', 'a4');
-    //     doc.setFont("Cairo-Regular", "normal");
-    //     console.log(doc.getFontList())
-    //     // doc.setFont('Cairo-Regular', 'normal');
+    //     const imgProps= doc.getImageProperties(canvas);
+    //     let imgHeight = imgProps.height * imgWidth / imgProps.width;
+    //     let heightLeft = imgHeight;
     //     let position = 0;
 
-    //     doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, "", "MEDIUM");
+    //     doc.addImage(canvas, 'PNG', 0, position, imgWidth, imgHeight, "", "MEDIUM");
     //     heightLeft -= pageHeight;
-
+    //     //15
     //     while (heightLeft >= 0) {
     //         position = heightLeft - imgHeight;
     //         doc.addPage();
-    //         doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, "", "MEDIUM");
+    //         doc.addImage(canvas, 'PNG', 0, position, imgWidth, imgHeight, "", "MEDIUM");
     //         heightLeft -= pageHeight;
     //     }
     //     doc.save(invoiceID+ '.pdf'); 
+        
     // }).then(() => {
     //     // restor the oringal styling
     //     updatingStyling(docStyle, row, invoice, true);
@@ -314,49 +311,4 @@ export default function PrintInvoice({data, total, sellerInfo}) {
     //     updatingStyling(docStyle, row, invoice, true);
     //     console.error(err)
     //     return err;
-    // })
-    
-    // const imgProps= pdf.getImageProperties(dataUrl);
-    // const pdfWidth = pdf.internal.pageSize.getWidth();
-    // const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    // pdf.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    // pdf.save("download.pdf"); 
-
-    // htmlToImage.toPng(document.getElementById('invoice'), { quality: 0.95 })
-    // .then(function (dataUrl) {
-    //     let link = document.createElement('a');
-    //     link.download = 'my-image-name.jpeg';
-    //     const pdf = new jsPDF() //('l', 'in', [842.4, 1188]);
-    //     const imgProps= pdf.getImageProperties(dataUrl);
-    //     const pdfWidth = pdf.internal.pageSize.getWidth();
-    //     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    //     let y = 500 // Height position of new content
-        
-    //     pdf.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    //     // pdf.addImage(dataUrl,0,0,canvas.width,canvas.height);
-    //     if(pdfHeight > 365){ // I noticed 365 was the height of my page but for your landscape page it must be lower depending on your unit (pt, or mm or cm etc)
-    //         pdf.addPage();
-    //         pdf.addImage(dataUrl,0,-365,pdfWidth,pdfHeight);
-    //     }
-    //     pdf.save("download.pdf"); 
     // });
-
-    //html2pdf method to print PDF
-    // function downloadPDF(){
-    //     const invoice = document.getElementById("invoice");
-    //     let height = Math.max(invoice.scrollHeight, invoice.offsetHeight,
-    //         window.clientHeight, window.scrollHeight, window.offsetHeight)
-    //     let heightCM = height / 35.35
-    //     console.log(invoice);
-    //     // console.log(window);
-    //     var opt = {
-    //         margin: 1,
-    //         filename: 'myfile.pdf',
-    //         image: { type: 'jpeg', quality: 0.99 },
-    //         html2canvas: { dpi: 192, letterRendering: true },
-    //         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-    //     };
-    //     html2pdf().from(invoice).set(opt).save();
-    // }
-
-    
